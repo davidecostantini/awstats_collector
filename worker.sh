@@ -45,16 +45,21 @@ iterate () {
 
 get_log () {
     echo "Getting log from host ${1} using port ${2} and user ${3}"
+
+    #Check if copying multiple files
+    dest_path=$(basename "$log_path")
+    if [ dest_path == "*" ]; then dest_path = ""; fi
+
     if [ "$key" != "" ];then
         echo "Using key: $4"
-        scp -i $4 -P $2 $3@$1:$log_path $LocalDir/basename($log_path) &> log_$1
+        scp -i $4 -P $2 $3@$1:$log_path $LocalDir/$dest_path  &> log_$1
     else
-        scp -P $2 $3@$1:$log_path $LocalDir/basename($log_path) &> log_$1
+        scp -P $2 $3@$1:$log_path $LocalDir/$dest_path &> log_$1
     fi
 }
 
 
 #init------
 echo "Starting `date -u`"
-iterate()
+iterate
 echo "Completed - `date -u`"
